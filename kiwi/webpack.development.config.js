@@ -1,11 +1,10 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ModuleFeferationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
-    entry: 
-        './src/kiwi.js',
+    entry: './src/kiwi.js',
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, './dist'),
@@ -70,11 +69,10 @@ module.exports = {
             template: 'src/page-template.hbs',
             description: 'Kiwi'
         }),
-        new ModuleFeferationPlugin({
-            name: 'HelloWorldApp',
-            filename: 'remoteEntry.js',
-            exposes: {
-                './HelloWorldButton': './src/components/hello-world-button/hello-world-button.js'
+        new ModuleFederationPlugin({
+            name: 'KiwiApp',
+            remotes: {
+                HelloWorldApp: 'HelloWorldApp@http://localhost:9001/remoteEntry.js'
             }
         })
     ]
