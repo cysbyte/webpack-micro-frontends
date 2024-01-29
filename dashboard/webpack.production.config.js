@@ -5,11 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
-    entry: './src/kiwi.js',
+    entry: './src/dashboard.js',
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, './dist'),
-        publicPath: 'http://localhost:9002/'
+        publicPath: 'http://localhost:9000/'
     },
     mode: 'production',
     optimization: {
@@ -21,21 +21,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(png|jpg)$/,
-                type: 'asset',
-                parser: {
-                    dataUrlCondition: {
-                        maxSize: 3 * 1024
-                    }
-                }
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'
-                ]
-            },
-            {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
@@ -45,12 +30,6 @@ module.exports = {
                     }
                 }
             },
-            {
-                test: /\.hbs$/,
-                use: [
-                    'handlebars-loader'
-                ]
-            }
         ]
     },
     plugins: [
@@ -64,17 +43,15 @@ module.exports = {
             ]
         }),
         new HtmlWebpackPlugin({
-            filename: 'kiwi.html',
-            title: 'Kiwi',
-            template: 'src/page-template.hbs',
-            description: 'Kiwi',
+            filename: 'dashboard.html',
+            title: 'Dashboard',
             minify: false
         }),
         new ModuleFederationPlugin({
-            name: 'KiwiApp',
-            filename: 'remoteEntry.js',
-            exposes: {
-                './KiwiPage': './src/components/kiwi-page/kiwi-page.js'
+            name: 'App',
+            remotes: {
+                HelloWorldApp: 'HelloWorldApp@http://localhost:9001/remoteEntry.js',
+                KiwiApp: 'KiwiApp@http://localhost:9002/remoteEntry.js'
             }
         })
     ]
